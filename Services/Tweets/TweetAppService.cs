@@ -16,11 +16,13 @@ public class TweetAppService : ITweetAppService
 
     public TweetAppService(
         ILogger<TweetAppService> logger,
+        IMapper mapper,
         UserManager<ApplicationUser> userManager,
         IHttpContextAccessor httpContextAccessor,
         ApplicationDbContext context)
     {
         _logger = logger;
+        _mapper = mapper;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
         _context = context;
