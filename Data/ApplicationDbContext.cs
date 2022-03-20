@@ -10,4 +10,19 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         : base(options)
     {
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Tweet>(tw =>
+        {
+            tw.HasOne(t => t.User)
+                .WithMany(u => u.Tweets)
+                .HasForeignKey(t => t.UserId)
+                .IsRequired();
+
+            tw.HasIndex(t => t.CreatedAt);
+        });
+    }
 }
