@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Yfim4tKBIzjVymHdr4cYcQbZR36B0LfOcodEOnTrqLZabcL2g2aTPyW22Mmm9r4Stoy0+BfLceYHZmWuK4y7AQ==",
+  "dgSpecHash": "C14520extDf6bxwlbLc6Iv0WZ8ivsc/vHREH+YlNvBDLuidWYR1AlVLHt7wOq2lBmKPfybUyItLrv7dBF4qTUQ==",
   "success": true,
   "projectFilePath": "D:\\DATA\\Git Repo\\TwitterClone\\TwitterClone.csproj",
   "expectedPackageFiles": [
@@ -33,6 +33,8 @@
     "C:\\Users\\magicjar\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\6.0.0\\microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512",
     "C:\\Users\\magicjar\\.nuget\\packages\\microsoft.extensions.options\\6.0.0\\microsoft.extensions.options.6.0.0.nupkg.sha512",
     "C:\\Users\\magicjar\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "C:\\Users\\magicjar\\.nuget\\packages\\mysqlconnector\\2.1.2\\mysqlconnector.2.1.2.nupkg.sha512",
+    "C:\\Users\\magicjar\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\6.0.1\\pomelo.entityframeworkcore.mysql.6.0.1.nupkg.sha512",
     "C:\\Users\\magicjar\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.0.6\\sqlitepclraw.bundle_e_sqlite3.2.0.6.nupkg.sha512",
     "C:\\Users\\magicjar\\.nuget\\packages\\sqlitepclraw.core\\2.0.6\\sqlitepclraw.core.2.0.6.nupkg.sha512",
     "C:\\Users\\magicjar\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.0.6\\sqlitepclraw.lib.e_sqlite3.2.0.6.nupkg.sha512",
