@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using TwitterClone.Areas.Identity;
 using TwitterClone.Data;
 using TwitterClone.Services;
+using TwitterClone.AutoMapper;
 // using TwitterClone.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,10 +22,14 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
         .AddDefaultUI()
         .AddDefaultTokenProviders();
 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(TwitterCloneMappingProfile));
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
 builder.Services.AddScoped<ITweetAppService, TweetAppService>();
@@ -43,6 +48,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {

@@ -35,6 +35,9 @@ public class TweetAppService : ITweetAppService
 
         Tweet newTweet = _mapper.Map<CreateTweetDto, Tweet>(input);
         newTweet.Id = Guid.NewGuid();
+        newTweet.CreatedAt = DateTime.UtcNow;
+        newTweet.UpdatedAt = newTweet.CreatedAt;
+        newTweet.UserId = user.Id;
 
         try
         {
