@@ -24,6 +24,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
 builder.Services.AddScoped<ITweetAppService, TweetAppService>();
 

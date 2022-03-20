@@ -2,12 +2,14 @@ using TwitterClone.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using AutoMapper;
 
 namespace TwitterClone.Services;
 
 public class TweetAppService : ITweetAppService
 {
     private readonly ILogger _logger;
+    private readonly IMapper _mapper;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ApplicationDbContext _context;
@@ -28,26 +30,21 @@ public class TweetAppService : ITweetAppService
     public async Task<TweetDto> CreateAsync(CreateTweetDto input)
     {
         var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-        Tweet newTweet = new Tweet()
-        {
-            Id = Guid.NewGuid(),
-            Content = input.Content,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = null,
-            UserId = user.Id
-        };
-        var newSavedTweet = await _context.Tweets.AddAsync(newTweet);
-        await _context.SaveChangesAsync();
 
-        return new TweetDto()
+        Tweet newTweet = _mapper.Map<CreateTweetDto, Tweet>(input);
+        newTweet.Id = Guid.NewGuid();
+
+        try
         {
-            Id = newSavedTweet.Entity.Id,
-            Content = newSavedTweet.Entity.Content,
-            CreatedAt = newSavedTweet.Entity.CreatedAt,
-            UpdatedAt = newSavedTweet.Entity.UpdatedAt,
-            UserId = newSavedTweet.Entity.UserId,
-            User = user
-        };
+            await _context.Tweets.AddAsync(newTweet);
+            await _context.SaveChangesAsync();
+            newTweet.User = user;
+            return _mapper.Map<Tweet, TweetDto>(newTweet);
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
     }
 
     public Task DeleteAsync(Guid id)
