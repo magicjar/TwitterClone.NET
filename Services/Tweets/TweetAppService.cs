@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace TwitterClone.Services;
 
@@ -52,23 +54,39 @@ public class TweetAppService : ITweetAppService
         }
     }
 
-    public Task DeleteAsync(Guid id)
+    [Authorize]
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Tweets.FirstOrDefaultAsync(e => e.Id.Equals(id));
+        if (entity == null) throw new NullReferenceException();
+        _context.Tweets.Remove(entity);
     }
 
-    public Task<TweetDto> GetAsync(Guid id)
+    public async Task<TweetDto> GetAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Tweets.FirstOrDefaultAsync(e => e.Id.Equals(id));
+        if (entity == null) throw new NullReferenceException();
+        return _mapper.Map<Tweet, TweetDto>(entity);
     }
 
-    public Task<List<TweetDto>> GetListAsync()
+    public async Task<List<TweetDto>> GetListAsync(Expression<Func<Tweet, bool>> predicate)
     {
-        throw new NotImplementedException();
+        var entities = await _context.Tweets.OrderByDescending(x => x.CreatedAt).Where(predicate).ToListAsync();
+        return _mapper.Map<List<Tweet>, List<TweetDto>>(entities);
     }
 
-    public Task<TweetDto> UpdateAsync(Guid id, CreateTweetDto input)
+    [Authorize]
+    public async Task<TweetDto> UpdateAsync(Guid id, CreateTweetDto input)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Tweets.FirstOrDefaultAsync(e => e.Id.Equals(id));
+        if (entity == null) throw new NullReferenceException();
+
+        var mappedEntity = _mapper.Map(input, entity);
+
+        _context.Tweets.Attach(mappedEntity);
+
+        var updatedEntity = _context.Tweets.Update(mappedEntity).Entity;
+
+        return _mapper.Map<Tweet, TweetDto>(updatedEntity);
     }
 }
