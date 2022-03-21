@@ -1,0 +1,23 @@
+@page "/{UserName}"
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (ApplicationUser != null)
+{
+    @ApplicationUser.UserName
+}
+
+@code {
+    [Parameter] public string? UserName { get; set; }
+    public ApplicationUser? ApplicationUser { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (String.IsNullOrEmpty(UserName)) throw new KeyNotFoundException();
+        ApplicationUser = await UserManager.FindByNameAsync(UserName);
+        if (ApplicationUser == null) throw new KeyNotFoundException();
+        await base.OnInitializedAsync();
+        return;
+    }
+}
