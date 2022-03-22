@@ -30,7 +30,6 @@ public class TweetAppService : ITweetAppService
         _context = context;
     }
 
-    [Authorize]
     public async Task<TweetDto> CreateAsync(CreateTweetDto input)
     {
         var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
@@ -54,12 +53,12 @@ public class TweetAppService : ITweetAppService
         }
     }
 
-    [Authorize]
     public async Task DeleteAsync(Guid id)
     {
         var entity = await _context.Tweets.FirstOrDefaultAsync(e => e.Id.Equals(id));
         if (entity == null) throw new NullReferenceException();
         _context.Tweets.Remove(entity);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<TweetDto> GetAsync(Guid id)
@@ -75,7 +74,6 @@ public class TweetAppService : ITweetAppService
         return _mapper.Map<List<Tweet>, List<TweetDto>>(entities);
     }
 
-    [Authorize]
     public async Task<TweetDto> UpdateAsync(Guid id, CreateTweetDto input)
     {
         var entity = await _context.Tweets.FirstOrDefaultAsync(e => e.Id.Equals(id));
@@ -86,6 +84,7 @@ public class TweetAppService : ITweetAppService
         _context.Tweets.Attach(mappedEntity);
 
         var updatedEntity = _context.Tweets.Update(mappedEntity).Entity;
+        await _context.SaveChangesAsync();
 
         return _mapper.Map<Tweet, TweetDto>(updatedEntity);
     }

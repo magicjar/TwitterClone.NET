@@ -33,6 +33,7 @@ builder.Services.AddAutoMapper(typeof(TwitterCloneMappingProfile));
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
 builder.Services.AddScoped<ITweetAppService, TweetAppService>();
+builder.Services.AddScoped<IFriendshipAppService, FriendshipAppService>();
 
 builder.Services.AddSingleton<WeatherForecastService>();
 

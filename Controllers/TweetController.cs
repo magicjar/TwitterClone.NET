@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TwitterClone.Services;
 
@@ -14,6 +15,7 @@ public class TweetController : Controller
         _tweetService = tweetService;
     }
 
+    [Authorize]
     [HttpPost("create")]
     public async Task Create(CreateTweetDto input)
     {

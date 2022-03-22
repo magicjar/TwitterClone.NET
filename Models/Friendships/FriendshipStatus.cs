@@ -2,5 +2,5 @@ namespace TwitterClone.Models;
 
 public enum FriendshipStatus
 {
-    Following = 0, Follower = 1, Blocked = 2
+    Friend = 0, Blocked = 2
 }
