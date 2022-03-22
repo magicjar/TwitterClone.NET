@@ -1,23 +1,35 @@
-@page "/{UserName}"
+@page "/{UserName?}"
 @using Microsoft.AspNetCore.Identity
+@using TwitterClone.Services
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject ITweetAppService TweetAppService
 
 @if (ApplicationUser != null)
 {
     @ApplicationUser.UserName
+
+    @if (Tweets != null)
+    {
+        @foreach (var tweet in Tweets)
+        {
+            <p>@tweet.Content</p>
+            <span>@tweet.CreatedAt</span>
+        }
+    }
 }
 
 @code {
     [Parameter] public string? UserName { get; set; }
     public ApplicationUser? ApplicationUser { get; set; }
+    public List<TweetDto> Tweets { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         if (String.IsNullOrEmpty(UserName)) throw new KeyNotFoundException();
         ApplicationUser = await UserManager.FindByNameAsync(UserName);
         if (ApplicationUser == null) throw new KeyNotFoundException();
-        await base.OnInitializedAsync();
+        Tweets = await TweetAppService.GetListAsync(x => x.UserId == ApplicationUser.Id);
         return;
     }
 }
