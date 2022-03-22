@@ -10,6 +10,6 @@ public class TwitterCloneMappingProfile : Profile
         CreateMap<CreateTweetDto, Tweet>();
         CreateMap<Tweet, TweetDto>();
         CreateMap<CreateFriendshipDto, Friendship>();
-        CreateMap<Friendship, FriendshipDto>();
+        CreateMap<Friendship, FriendshipDto>().ForMember(dest => dest.Friend, opt => opt.MapFrom(src => src.User != null ? src.User : src.Friend));
     }
 }

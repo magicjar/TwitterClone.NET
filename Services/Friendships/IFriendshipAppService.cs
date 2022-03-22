@@ -21,11 +21,11 @@ public interface IFriendshipAppService
     /// Follower
     /// </summary>
     /// <returns></returns>
-    Task<List<FriendshipDto>> GetFollowerListAsync(Expression<Func<Tweet, bool>> predicate);
+    Task<List<FriendshipDto>> GetFollowerListAsync();
 
     /// <summary>
     /// Following
     /// </summary>
     /// <returns></returns>
-    Task<List<FriendshipDto>> GetFollowingListAsync(Expression<Func<Tweet, bool>> predicate);
+    Task<List<FriendshipDto>> GetFollowingListAsync();
 }

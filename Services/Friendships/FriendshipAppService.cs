@@ -34,7 +34,7 @@ public class FriendshipAppService : IFriendshipAppService
     public async Task<FriendshipDto> CreateFollow(long friendId)
     {
         var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-        var friend = await _context.Users.FirstOrDefaultAsync(e => e.Id.Equals(friendId));
+        var friend = await _context.Users.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(friendId));
 
         if (friend == null) throw new KeyNotFoundException();
 
@@ -63,20 +63,24 @@ public class FriendshipAppService : IFriendshipAppService
     public async Task DeleteFollow(long friendId)
     {
         var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-        var friendship = await _context.Friendships.Where(x => x.UserId.Equals(user.Id)).Where(x => x.FriendId.Equals(friendId)).SingleAsync();
+        var friendship = await _context.Friendships.AsNoTracking().Where(x => x.UserId.Equals(user.Id)).Where(x => x.FriendId.Equals(friendId)).SingleAsync();
 
         if (friendship == null) throw new NullReferenceException();
         _context.Friendships.Remove(friendship);
         await _context.SaveChangesAsync();
     }
 
-    public Task<List<FriendshipDto>> GetFollowerListAsync(Expression<Func<Tweet, bool>> predicate)
+    public async Task<List<FriendshipDto>> GetFollowerListAsync()
     {
-        throw new NotImplementedException();
+        var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+        var followers = await _context.Friendships.AsNoTracking().Include(x => x.User).OrderByDescending(x => x.CreatedAt).Where(x => x.FriendId == user.Id).ToListAsync();
+        return _mapper.Map<List<Friendship>, List<FriendshipDto>>(followers);
     }
 
-    public Task<List<FriendshipDto>> GetFollowingListAsync(Expression<Func<Tweet, bool>> predicate)
+    public async Task<List<FriendshipDto>> GetFollowingListAsync()
     {
-        throw new NotImplementedException();
+        var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+        var followers = await _context.Friendships.AsNoTracking().Include(x => x.Friend).OrderByDescending(x => x.CreatedAt).Where(x => x.UserId == user.Id).ToListAsync();
+        return _mapper.Map<List<Friendship>, List<FriendshipDto>>(followers);
     }
 }
