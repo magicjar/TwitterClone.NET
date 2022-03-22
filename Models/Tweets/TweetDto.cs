@@ -16,5 +16,8 @@ public class TweetDto
 [Serializable]
 public class CreateTweetDto
 {
+    [Required]
+    [Display(Name = "Tweet")]
+    [MaxLength(280)]
     public string Content { get; set; } = "";
 }

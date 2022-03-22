@@ -17,9 +17,9 @@ public class TweetController : Controller
     }
 
     [HttpPost("create")]
-    public async Task Create(CreateTweetDto input)
+    public async Task<TweetDto> Create(CreateTweetDto input)
     {
-        await _tweetService.CreateAsync(input);
+        return await _tweetService.CreateAsync(input);
     }
 
     [HttpDelete("delete")]

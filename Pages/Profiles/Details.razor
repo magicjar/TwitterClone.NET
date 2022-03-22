@@ -1,9 +1,20 @@
 @page "/{UserName?}"
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@using System.ComponentModel.DataAnnotations
 @using TwitterClone.Services
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject ITweetAppService TweetAppService
+
+<EditForm Model="@TweetModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputTextArea row="10" id="Tweet" @bind-Value="TweetModel.Content" />
+
+    <button type="submit">Submit</button>
+</EditForm>
 
 @if (ApplicationUser != null)
 {
@@ -20,6 +31,9 @@
 }
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    private CreateTweetDto TweetModel = new();
     [Parameter] public string? UserName { get; set; }
     public ApplicationUser? ApplicationUser { get; set; }
     public List<TweetDto> Tweets { get; set; }
@@ -31,5 +45,22 @@
         if (ApplicationUser == null) throw new KeyNotFoundException();
         Tweets = await TweetAppService.GetListAsync(x => x.UserId == ApplicationUser.Id);
         return;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var user = (await AuthenticationStateTask).User;
+        if (!user.Identity.IsAuthenticated) return;
+        try
+        {
+            TweetDto newTweet = await TweetAppService.CreateAsync(TweetModel);
+            Tweets.Insert(0, newTweet);
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+
+        StateHasChanged();
     }
 }
