@@ -5,6 +5,7 @@ using TwitterClone.Services;
 
 namespace TwitterClone.Controllers;
 
+[Authorize]
 [Route("tweets")]
 public class TweetController : Controller
 {
@@ -15,10 +16,15 @@ public class TweetController : Controller
         _tweetService = tweetService;
     }
 
-    [Authorize]
     [HttpPost("create")]
     public async Task Create(CreateTweetDto input)
     {
         await _tweetService.CreateAsync(input);
+    }
+
+    [HttpDelete("delete")]
+    public async Task Delete(Guid id)
+    {
+        await _tweetService.DeleteAsync(id);
     }
 }
