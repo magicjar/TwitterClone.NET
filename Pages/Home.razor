@@ -1,3 +1,65 @@
 @page "/home"
+@using Microsoft.AspNetCore.Identity
+@using TwitterClone.Services
+@inject UserManager<ApplicationUser> UserManager
+@inject ITweetAppService TweetAppService
 
 <PageTitle>Home</PageTitle>
+
+<EditForm class="mb-3" Model="@TweetModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-floating">
+        <InputTextArea row="10" id="Tweet" class="form-control" aria-required="true"
+            @bind-Value="@TweetModel.Content" />
+        <label for="Tweet" class="form-label">Tweet</label>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</EditForm>
+
+@if (Tweets != null)
+{
+    @foreach (var tweet in Tweets)
+    {
+        <div class="p-3 mb-3 border-top border-end border-bottom border-start rounded-3">
+            <p>@tweet.Content</p>
+            <span>@tweet.CreatedAt</span>
+        </div>
+    }
+}
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    private ApplicationUser? ApplicationUser { get; set; }
+    private CreateTweetDto TweetModel = new();
+
+    public List<TweetDto> Tweets { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateTask).User;
+        ApplicationUser = await UserManager.FindByNameAsync(user.Identity.Name);
+        if (ApplicationUser == null) throw new KeyNotFoundException();
+        Tweets = await TweetAppService.GetListAsync(x => x.UserId == ApplicationUser.Id);
+        return;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var user = (await AuthenticationStateTask).User;
+        if (!user.Identity.IsAuthenticated) return;
+        try
+        {
+            TweetDto newTweet = await TweetAppService.CreateAsync(TweetModel);
+            Tweets.Insert(0, newTweet);
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+
+        StateHasChanged();
+    }
+}
